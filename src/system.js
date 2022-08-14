@@ -11,9 +11,9 @@ _ = fp.convert({
 
 
 class System {
-    addMember = (systemState, member) => {
-        var previous = systemState.get();
-        var next = Library.addMember(previous, member);
+    static addMember = (systemState, member) => {
+        const previous = systemState.get();
+        const next = Library.addMember(previous, member);
         systemState.commit(previous, next);
     }
 }
@@ -76,8 +76,8 @@ class SystemValidity {
 
 class SystemConsistency {
     static threeWayMerge(current, previous, next) {
-        var previousToCurrent = diff(previous, current);
-        var previousToNext = diff(previous, next);
+        const previousToCurrent = diff(previous, current);
+        const previousToNext = diff(previous, next);
         if (havePathInCommon(previousToCurrent, previousToNext)) {
             return _.merge(current, previousToNext);
         }
@@ -95,23 +95,23 @@ class SystemConsistency {
 }
 
 function diffObjects(data1, data2) {
-    var emptyObject = _.isArray(data1) ? [] : {};
+    const emptyObject = _.isArray(data1) ? [] : {}
     if (data1 === data2) {
-        return emptyObject;
+        return emptyObject
     }
-    var keys = _.union(_.keys(data1), _.keys(data2));
+    const keys = _.union(_.keys(data1), _.keys(data2))
     return _.reduce(keys,
         function (acc, k) {
-            var res = diff(
+            const res = diff(
                 _.get(data1, k),
                 _.get(data2, k));
             if ((_.isObject(res) && _.isEmpty(res)) ||
                 (res === "no-diff")) {
                 return acc;
             }
-            return _.set(acc, [k], res);
+            return _.set(acc, [k], res)
         },
-        emptyObject);
+        emptyObject)
 }
 
 function diff(data1, data2) {
@@ -142,61 +142,60 @@ function havePathInCommon(diff1, diff2) {
         _.intersection(informationPaths(diff1), informationPaths(diff2)));
 }
 
-var library = {
-    "catalog": {
-        "booksByIsbn": {
-            "978-1779501127": {
-                "isbn": "978-1779501127",
-                "title": "Watchmen",
-                "publicationYear": 1987,
-                "authorIds": ["alan-moore", "dave-gibbons"]
-            }
-        },
-        "authorsById": {
-            "alan-moore": {
-                "name": "Alan Moore",
-                "bookIsbns": ["978-1779501127"]
-            },
-            "dave-gibbons": {
-                "name": "Dave Gibbons",
-                "bookIsbns": ["978-1779501127"]
-            }
-        }
-    }
-};
-
 module.exports = {
     System, SystemState
 }
 
+// var library = {
+//     "catalog": {
+//         "booksByIsbn": {
+//             "978-1779501127": {
+//                 "isbn": "978-1779501127",
+//                 "title": "Watchmen",
+//                 "publicationYear": 1987,
+//                 "authorIds": ["alan-moore", "dave-gibbons"]
+//             }
+//         },
+//         "authorsById": {
+//             "alan-moore": {
+//                 "name": "Alan Moore",
+//                 "bookIsbns": ["978-1779501127"]
+//             },
+//             "dave-gibbons": {
+//                 "name": "Dave Gibbons",
+//                 "bookIsbns": ["978-1779501127"]
+//             }
+//         }
+//     }
+// };
 
-var prev = library
-var next = _.set(
-    library,
-    ["catalog", "booksByIsbn", "978-1779501127", "publicationYear"],
-    1986)
-
-var libraryWithUpdatedTitle = _.set(
-    library,
-    ["catalog", "booksByIsbn", "978-1779501127", "title"],
-    "The Watchmen");
-var current = _.set(
-    libraryWithUpdatedTitle,
-    ["catalog", "authorsById", "dave-gibbons", "name"],
-    "David Chester Gibbons");
-
-
-console.log(prev.catalog)
-console.log(next.catalog)
-
-let res1 = diff(prev, next);
-console.log(JSON.stringify(res1))
-console.log(informationPaths(res1))
-
-
-let res2 = diff(prev, current);
-console.log(JSON.stringify(res2))
-console.log(informationPaths(res2))
-
-let res3 = _.merge(current, (diff(prev, next)));
-console.log(JSON.stringify(res3))
+// var prev = library
+// var next = _.set(
+//     library,
+//     ["catalog", "booksByIsbn", "978-1779501127", "publicationYear"],
+//     1986)
+//
+// var libraryWithUpdatedTitle = _.set(
+//     library,
+//     ["catalog", "booksByIsbn", "978-1779501127", "title"],
+//     "The Watchmen");
+// var current = _.set(
+//     libraryWithUpdatedTitle,
+//     ["catalog", "authorsById", "dave-gibbons", "name"],
+//     "David Chester Gibbons");
+//
+//
+// console.log(prev.catalog)
+// console.log(next.catalog)
+//
+// let res1 = diff(prev, next);
+// console.log(JSON.stringify(res1))
+// console.log(informationPaths(res1))
+//
+//
+// let res2 = diff(prev, current);
+// console.log(JSON.stringify(res2))
+// console.log(informationPaths(res2))
+//
+// let res3 = _.merge(current, (diff(prev, next)));
+// console.log(JSON.stringify(res3))

@@ -23,7 +23,7 @@ UserManagement.addMember = function (userManagement, member) {
     if(_.has(userManagement, infoPath)) {
         throw "Member already exists."
     }
-    var nextUserManagement = _.set(userManagement,
+    const nextUserManagement = _.set(userManagement,
         infoPath,
         member);
     return nextUserManagement;
